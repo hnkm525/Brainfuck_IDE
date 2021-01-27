@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>brainfuck</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    </head>
+    <body>
+    <script type="text/javascript" src="src/interpreter.js"></script>
+    <div id="editor-div" style="height: 500px">Your code starts here!</div>
+    <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+    <br>
+    <button type="button" class="btn btn-dark" onclick="run()">Run</button>
+
+    <script type="text/javascript">
+        var editor = ace.edit("editor-div");
+        editor.setTheme("ace/theme/monokai");
+        editor.$blockScrolling = Infinity;
+
+        function run() {
+            var code = editor.getValue();
+            exec(code);
+        }
+    </script>
+</body>
+</html>
