@@ -4,22 +4,57 @@
         <meta charset="utf-8">
         <title>brainfuck</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body>
     <script type="text/javascript" src="src/interpreter.js"></script>
     <div id="editor-div" style="height: 500px">Your code starts here!</div>
-    <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
     <br>
+    <div id="memcell">
+        <table class="table-responsive table-bordered">
+            <tr>
+                <th v-for="n in mem_size" :key="n" class="table-active">
+                    {{ (n-1) }}
+                </th>
+            </tr>
+            <tr>
+                <td v-for="cell in mem" class="table-light">
+                    {{ cell.value }}
+                </td>
+            </tr>
+        </table>
+    </div>
     <button type="button" class="btn btn-dark" onclick="run()">Run</button>
+    <br>
+    memory_size:
+    <input type="number" id="memory_size" class="form-control" value=1000 v-model.lazy="mem_size">
 
     <script type="text/javascript">
         var editor = ace.edit("editor-div");
         editor.setTheme("ace/theme/monokai");
         editor.$blockScrolling = Infinity;
-
+        var mem_size = parseInt(document.getElementById("memory_size").value);
+        var memory = memory_init(mem_size);
+        var mem = new Vue({
+            el: '#memcell',
+            data: {
+                mem: memory,
+                mem_size: mem_size
+            },
+            watch:{
+                mem_size:function(after, before){
+                    this.mem_size = parseInt(after);
+                    var memory = init(after);
+                }
+            }
+        })
+        var input = "";
         function run() {
-            var code = editor.getValue();
-            exec(code);
+            var instructions = editor.getValue();
+            memory = memory_init(mem_size);
+            var out = exec(instructions, input, memory, ptr);
+            console.log(out);
         }
     </script>
 </body>
