@@ -9,39 +9,48 @@
         <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body>
-    <script type="text/javascript" src="src/interpreter.js"></script>
-    <div id="editor-div" style="height: 500px">>+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.[-]>++++++++[<++
+        <script type="text/javascript" src="src/interpreter.js"></script>
+        <div id="editor-div" style="height: 500px">>+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.[-]>++++++++[<++
 ++>-]<.>+++++++++++[<+++++>-]<.>++++++++[<+++>-]<.+++.------.--------.[-]>
 ++++++++[<++++>-]<+.[-]++++++++++.</div>
+            <br>
+            <div id="memcell">
+                <table class="table-responsive">
+                    <tr>
+                        <th v-for="n in mem_size" :key="n">
+                            <div class="alert alert-dark mb-0" role="alert">
+                                {{ (n-1) }}
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td v-for="cell in mem">
+                            <div class="alert alert-success mb-0" role="alert">
+                                {{ cell.value }}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <button type="button" class="btn btn-dark" onclick="run()">Run</button>
+            <br>
+            <form name="ioform">
+                <div class="mb-0">
+                    <label for="input" class="form-label">input</label>
+                    <textarea class="form-control" id="input" rows="3"></textarea>
+                </div>
+                <div class="mb-0">
+                    <label for="output" class="form-label">output</label>
+                    <textarea name="outputform" class="form-control" id="output" rows="3"></textarea>
+                </div>
+            </form>
     <br>
-    <div id="memcell">
-        <table class="table-responsive">
-            <tr>
-                <th v-for="n in mem_size" :key="n">
-                    <div class="alert alert-dark mb-0" role="alert">
-                        {{ (n-1) }}
-                    </div>
-                </th>
-            </tr>
-            <tr>
-                <td v-for="cell in mem">
-                    <div class="alert alert-success mb-0" role="alert">
-                        {{ cell.value }}
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <button type="button" class="btn btn-dark" onclick="run()">Run</button>
-    <br>
-    memory_size:
-    <input type="number" id="memory_size" class="form-control" value=1000 v-model.lazy="mem_size">
-
+    
     <script type="text/javascript">
         var editor = ace.edit("editor-div");
         editor.setTheme("ace/theme/monokai");
         editor.$blockScrolling = Infinity;
-        var mem_size = parseInt(document.getElementById("memory_size").value);
+        var mem_size = 1000;
         var memory = memory_init(mem_size);
         var mem = new Vue({
             el: '#memcell',
@@ -49,11 +58,8 @@
                 mem: memory,
                 mem_size: mem_size
             },
-            watch:{
-                mem_size:function(after, before){
-                    this.mem_size = parseInt(after);
-                    var memory = init(after);
-                }
+            watch: {
+
             }
         })
         var input = "";
@@ -61,7 +67,7 @@
             var instructions = editor.getValue();
             memory = memory_init(mem_size);
             var out = exec(instructions, input, memory, ptr);
-            console.log(out);
+            document.ioform.outputform.value = out;
         }
     </script>
 </body>
