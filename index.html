@@ -62,9 +62,9 @@
 
             }
         })
-        var input = "";
         function run() {
             var instructions = editor.getValue();
+            var input = document.getElementById("input").value;
             memory = memory_init(mem_size);
             var out = exec(instructions, input, memory, ptr);
             document.ioform.outputform.value = out;
